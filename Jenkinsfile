@@ -1,25 +1,20 @@
 pipeline {
     agent any
     
-    environment {
-        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
-        PATH = "${JAVA_HOME}/bin:${PATH}"
-    }
-    
     stages {
         stage('Checkout') {
             steps {
                 echo 'Checking out code from GitHub...'
                 git branch: 'main', url: 'https://github.com/Fahssi-nabil/Projet-DevOps-NabilFahssi.git'
-                sh 'git clean -fd'
+                bat 'git clean -fd'
             }
         }
         
         stage('Build') {
             steps {
                 echo 'Building the application with Maven...'
-                sh 'mvn clean compile'
-                sh 'mvn test'
+                bat 'mvn clean compile'
+                bat 'mvn test'
             }
             post {
                 success {
@@ -34,7 +29,7 @@ pipeline {
         stage('Package') {
             steps {
                 echo 'Packaging the application...'
-                sh 'mvn package -DskipTests'
+                bat 'mvn package -DskipTests'
             }
         }
         
