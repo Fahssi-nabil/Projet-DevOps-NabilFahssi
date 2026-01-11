@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checking out code from GitHub...'
-                git branch: 'main', url: 'https://github.com/VOTRE_USERNAME/Projet-DevOps-NabilFahssi.git'
+                git branch: 'main', url: 'https://github.com/Fahssi-nabil/Projet-DevOps-NabilFahssi.git'
                 sh 'git clean -fd'
             }
         }
