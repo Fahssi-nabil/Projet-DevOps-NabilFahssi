@@ -59,15 +59,6 @@ pipeline {
                 script {
                     try {
                         echo 'Sending notification to Slack...'
-                        // Note: Slack notification nécessite le plugin Slack Notification configuré
-                        // Si le plugin n'est pas configuré, cette étape sera ignorée
-                        if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
-                            echo 'Build réussi! (Notification Slack optionnelle - configurez Slack si nécessaire)'
-                        } else {
-                            echo 'Build échoué! (Notification Slack optionnelle - configurez Slack si nécessaire)'
-                        }
-                        // Décommentez et configurez Slack pour activer les notifications:
-                        /*
                         def message = """
                         *Pipeline ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}*
                         Status: *${currentBuild.result ?: 'SUCCESS'}*
@@ -80,10 +71,11 @@ pipeline {
                             message: message,
                             channel: '#devops-notifications'
                         )
-                        */
+                        echo 'Notification Slack envoyée avec succès!'
                     } catch (Exception e) {
                         echo "Notification Slack non disponible: ${e.message}"
-                        echo 'Continuez sans notification Slack'
+                        echo 'Note: Configurez Slack dans Jenkins (Manage Jenkins > Configure System > Slack) pour activer les notifications'
+                        echo 'Le pipeline continue sans notification Slack'
                     }
                 }
             }
