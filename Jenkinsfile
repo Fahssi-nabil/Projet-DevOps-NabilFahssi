@@ -56,20 +56,35 @@ pipeline {
         
         stage('Notify Slack') {
             steps {
-                echo 'Sending notification to Slack...'
                 script {
-                    def message = """
-                    *Pipeline ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}*
-                    Status: *${currentBuild.result ?: 'SUCCESS'}*
-                    Branch: *${env.GIT_BRANCH}*
-                    Commit: *${env.GIT_COMMIT.take(7)}*
-                    Console: ${env.BUILD_URL}
-                    """
-                    slackSend(
-                        color: currentBuild.result == 'SUCCESS' ? 'good' : 'danger',
-                        message: message,
-                        channel: '#devops-notifications'
-                    )
+                    try {
+                        echo 'Sending notification to Slack...'
+                        // Note: Slack notification nécessite le plugin Slack Notification configuré
+                        // Si le plugin n'est pas configuré, cette étape sera ignorée
+                        if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+                            echo 'Build réussi! (Notification Slack optionnelle - configurez Slack si nécessaire)'
+                        } else {
+                            echo 'Build échoué! (Notification Slack optionnelle - configurez Slack si nécessaire)'
+                        }
+                        // Décommentez et configurez Slack pour activer les notifications:
+                        /*
+                        def message = """
+                        *Pipeline ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}*
+                        Status: *${currentBuild.result ?: 'SUCCESS'}*
+                        Branch: *${env.GIT_BRANCH}*
+                        Commit: *${env.GIT_COMMIT.take(7)}*
+                        Console: ${env.BUILD_URL}
+                        """
+                        slackSend(
+                            color: currentBuild.result == 'SUCCESS' ? 'good' : 'danger',
+                            message: message,
+                            channel: '#devops-notifications'
+                        )
+                        */
+                    } catch (Exception e) {
+                        echo "Notification Slack non disponible: ${e.message}"
+                        echo 'Continuez sans notification Slack'
+                    }
                 }
             }
         }
